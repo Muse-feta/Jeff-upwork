@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
   // Hugging Face API call
   const response = await fetch(
-    "https://api-inference.huggingface.co/models/gpt2-medium",
+    "https://api-inference.huggingface.co/models/gpt2",
     {
       method: "POST",
       headers: {
