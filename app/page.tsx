@@ -57,7 +57,13 @@ export default function AssessmentForm() {
     if (assessmentRef.current) {
       const element = assessmentRef.current;
 
-      // Use html2canvas to create a canvas from the table
+      // Temporarily hide the download button
+      const button = document.getElementById("download-button");
+      if (button) {
+        button.style.display = "none"; // Hide the button
+      }
+
+      // Use html2canvas to create a canvas from the assessment div
       const canvas = await html2canvas(element);
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF();
@@ -80,8 +86,14 @@ export default function AssessmentForm() {
       }
 
       pdf.save("assessment.pdf"); // Download the PDF
+
+      // Restore the button visibility
+      if (button) {
+        button.style.display = "block"; // Show the button again
+      }
     }
   };
+
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
@@ -191,6 +203,7 @@ export default function AssessmentForm() {
             </tbody>
           </table>
           <button
+            id="download-button" // Add this ID for the button
             onClick={downloadPDF}
             className="mt-4 py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200"
           >
