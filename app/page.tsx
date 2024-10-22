@@ -94,7 +94,6 @@ export default function AssessmentForm() {
     }
   };
 
-
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
       <h1 className="text-2xl font-bold mb-6 text-center">
@@ -178,23 +177,29 @@ export default function AssessmentForm() {
           className="mt-6 p-4 border rounded-md bg-gray-50"
           ref={assessmentRef}
         >
-          <h2 className="text-lg font-bold">Your Assessment:</h2>
-          <table className="min-w-full divide-y divide-gray-200 mt-4">
-            <thead>
+          <h2 className="text-lg font-bold mb-4">Medical Assessment Details:</h2>
+          <table className="min-w-full divide-y divide-gray-200 border border-gray-300 shadow-md">
+            <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 text-left">Field</th>
+                <th className="px-4 py-2 text-left border-r border-gray-300">
+                  Field
+                </th>
                 <th className="px-4 py-2 text-left">Details</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="bg-white divide-y divide-gray-300">
               {assessmentLines.map((line, index) => {
                 if (line.length > 1) {
                   const field = line[0];
                   const details = line.slice(1).join(": ");
                   return (
                     <tr key={index}>
-                      <td className="border px-4 py-2">{field}</td>
-                      <td className="border px-4 py-2">{details}</td>
+                      <td className="border px-4 py-2 border-gray-300 bg-gray-50 font-semibold text-sm">
+                        {field}
+                      </td>
+                      <td className="border px-4 py-2 border-gray-300 text-sm">
+                        {details}
+                      </td>
                     </tr>
                   );
                 }
