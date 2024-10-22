@@ -11,6 +11,10 @@ interface FormData {
   treatmentPlan: string;
 }
 
+interface AssessmentResponse {
+  assessment: string; // Adjust based on your actual API response structure
+}
+
 export default function AssessmentForm() {
   const [formData, setFormData] = useState<FormData>({
     diagnosis: "",
@@ -19,6 +23,7 @@ export default function AssessmentForm() {
     historyOfProblem: "",
     treatmentPlan: "",
   });
+
   const [assessment, setAssessment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const assessmentRef = useRef<HTMLDivElement | null>(null); // Reference to the assessment div
@@ -36,22 +41,26 @@ export default function AssessmentForm() {
     e.preventDefault();
     setLoading(true);
 
-    const response = await fetch("/api/generate-assessment", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch("/api/generate-assessment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Define a type for the API response
-    interface AssessmentResponse {
-      assessment: string; // Adjust based on your actual API response structure
+      if (!response.ok) {
+        throw new Error("Failed to generate assessment");
+      }
+
+      const data: AssessmentResponse = await response.json(); // Specify the response type
+      setAssessment(data.assessment);
+    } catch (error) {
+      console.error("Error generating assessment:", error);
+    } finally {
+      setLoading(false);
     }
-
-    const data: AssessmentResponse = await response.json(); // Specify the type
-    setAssessment(data.assessment);
-    setLoading(false);
   };
 
   // Split the assessment response into lines for table rendering
