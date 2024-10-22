@@ -26,7 +26,10 @@ export default function AssessmentForm() {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -41,7 +44,12 @@ export default function AssessmentForm() {
       body: JSON.stringify(formData),
     });
 
-    const data = await response.json();
+    // Define a type for the API response
+    interface AssessmentResponse {
+      assessment: string; // Adjust based on your actual API response structure
+    }
+
+    const data: AssessmentResponse = await response.json(); // Specify the type
     setAssessment(data.assessment);
     setLoading(false);
   };
@@ -177,7 +185,9 @@ export default function AssessmentForm() {
           className="mt-6 p-4 border rounded-md bg-gray-50"
           ref={assessmentRef}
         >
-          <h2 className="text-lg font-bold mb-4">Medical Assessment Details:</h2>
+          <h2 className="text-lg font-bold mb-4">
+            Medical Assessment Details:
+          </h2>
           <table className="min-w-full divide-y divide-gray-200 border border-gray-300 shadow-md">
             <thead className="bg-gray-100">
               <tr>
