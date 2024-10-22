@@ -19,15 +19,25 @@ export async function POST(request: Request) {
   );
 
   // Construct the prompt for Hugging Face model
-  const prompt = `
-    Based on the following information, generate a comprehensive medical assessment:
-    
+const prompt = `
+    Generate a comprehensive medical assessment based on the following information:
+
     Diagnosis: ${diagnosis}
     History of Trauma: ${historyOfTrauma}
     Symptoms: ${symptoms}
     History of the Problem: ${historyOfProblem}
     Treatment Plan: ${treatmentPlan}
-  `;
+
+    Please provide the assessment in a narrative format. Each section should be summarized into a coherent statement that connects all fields together. For example:
+
+    Symptoms: After assessing the patient's symptoms, including ${symptoms}, it is concluded that ${diagnosis}. Furthermore, considering the ${historyOfTrauma}, it appears that the trauma could be linked to the patient's condition.
+    Treatment Plan: The recommended treatment plan includes ${treatmentPlan} which addresses the identified issues.
+     
+    Conclusion: Based on the above assessments, it can be concluded that the patient requires careful monitoring and follow-up treatment, particularly focusing on the implications of ${diagnosis} and ${historyOfProblem}. Additional recommendations for further evaluation or treatment may include consideration of specific therapies or interventions based on the patient's individual response and needs.
+
+    Ensure that each part of the assessment is clearly articulated and connects back to the overall medical context of the patient.
+`;
+
 
   // Hugging Face API call
   const response = await fetch(
@@ -58,8 +68,6 @@ export async function POST(request: Request) {
   }
 
   const result = await response.json();
-
-  console.log("Hugging Face API response:", result);
   const assessment = result[0]?.generated_text || "No assessment generated.";
 
   return NextResponse.json({ assessment });
