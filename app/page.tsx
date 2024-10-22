@@ -25,6 +25,7 @@ export default function AssessmentForm() {
   });
 
   const [assessment, setAssessment] = useState<string>("");
+  console.log("thsi is.................",assessment);
   const [loading, setLoading] = useState<boolean>(false);
   const assessmentRef = useRef<HTMLDivElement | null>(null); // Reference to the assessment div
 

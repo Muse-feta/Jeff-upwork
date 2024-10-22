@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer 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`,
+        Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
       },
       body: JSON.stringify({
         inputs: prompt,
@@ -58,6 +58,8 @@ export async function POST(request: Request) {
   }
 
   const result = await response.json();
+
+  console.log("Hugging Face API response:", result);
   const assessment = result[0]?.generated_text || "No assessment generated.";
 
   return NextResponse.json({ assessment });
