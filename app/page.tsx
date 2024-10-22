@@ -1,5 +1,7 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface FormData {
   diagnosis: string;
@@ -18,7 +20,8 @@ export default function AssessmentForm() {
     treatmentPlan: "",
   });
   const [assessment, setAssessment] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const [loading, setLoading] = useState<boolean>(false);
+  const assessmentRef = useRef<HTMLDivElement | null>(null); // Reference to the assessment div
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,7 +31,7 @@ export default function AssessmentForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when form is submitted
+    setLoading(true);
 
     const response = await fetch("/api/generate-assessment", {
       method: "POST",
@@ -40,7 +43,44 @@ export default function AssessmentForm() {
 
     const data = await response.json();
     setAssessment(data.assessment);
-    setLoading(false); // Set loading to false after response is received
+    setLoading(false);
+  };
+
+  // Split the assessment response into lines for table rendering
+  const assessmentLines = assessment
+    .split("\n")
+    .filter((line) => line.trim() !== "")
+    .map((line) => line.split(": ").map((part) => part.trim()));
+
+  // Function to download the assessment as a PDF
+  const downloadPDF = async () => {
+    if (assessmentRef.current) {
+      const element = assessmentRef.current;
+
+      // Use html2canvas to create a canvas from the table
+      const canvas = await html2canvas(element);
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      const imgWidth = 190; // Set width of the image in PDF
+      const pageHeight = pdf.internal.pageSize.height; // Get the page height
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calculate height based on width
+      let heightLeft = imgHeight;
+
+      let position = 0;
+
+      // Add image to PDF and handle page breaks
+      pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save("assessment.pdf"); // Download the PDF
+    }
   };
 
   return (
@@ -49,6 +89,7 @@ export default function AssessmentForm() {
         Create a Medical Assessment
       </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Input fields for diagnosis, history of trauma, symptoms, history of problem, and treatment plan */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Diagnosis:
@@ -114,16 +155,47 @@ export default function AssessmentForm() {
         <button
           type="submit"
           className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200"
-          disabled={loading} // Disable button when loading
+          disabled={loading}
         >
           {loading ? "Please wait..." : "Generate Assessment"}
         </button>
       </form>
 
       {assessment && (
-        <div className="mt-6 p-4 border rounded-md bg-gray-50">
+        <div
+          className="mt-6 p-4 border rounded-md bg-gray-50"
+          ref={assessmentRef}
+        >
           <h2 className="text-lg font-bold">Your Assessment:</h2>
-          <p>{assessment}</p>
+          <table className="min-w-full divide-y divide-gray-200 mt-4">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 text-left">Field</th>
+                <th className="px-4 py-2 text-left">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {assessmentLines.map((line, index) => {
+                if (line.length > 1) {
+                  const field = line[0];
+                  const details = line.slice(1).join(": ");
+                  return (
+                    <tr key={index}>
+                      <td className="border px-4 py-2">{field}</td>
+                      <td className="border px-4 py-2">{details}</td>
+                    </tr>
+                  );
+                }
+                return null;
+              })}
+            </tbody>
+          </table>
+          <button
+            onClick={downloadPDF}
+            className="mt-4 py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200"
+          >
+            Download as PDF
+          </button>
         </div>
       )}
     </div>

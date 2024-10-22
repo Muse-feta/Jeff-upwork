@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@huggingface/inference": "^2.8.1",
+    "html2canvas": "^1.4.1",
     "huggingface": "^1.4.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "next": "14.2.15",
     "openai": "^4.68.1",
     "react": "^18",
