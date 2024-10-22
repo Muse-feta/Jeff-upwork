@@ -198,35 +198,36 @@ export default function AssessmentForm() {
           <h2 className="text-lg font-bold mb-4">
             Medical Assessment Details:
           </h2>
-          <table className="min-w-full divide-y divide-gray-200 border border-gray-300 shadow-md">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left border-r border-gray-300">
-                  Field
-                </th>
-                <th className="px-4 py-2 text-left">Details</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-300">
-              {assessmentLines.map((line, index) => {
-                if (line.length > 1) {
-                  const field = line[0];
-                  const details = line.slice(1).join(": ");
-                  return (
-                    <tr key={index}>
-                      <td className="border px-4 py-2 border-gray-300 bg-gray-50 font-semibold text-sm">
+          <div className="space-y-6">
+            {" "}
+            {/* Add more space between each row */}
+            {assessmentLines.map((line, index) => {
+              if (line.length > 1) {
+                const field = line[0];
+                const details = line.slice(1).join(": ");
+                return (
+                  <div key={index} className="border-b border-gray-300 pb-2">
+                    {" "}
+                    {/* Add padding for space */}
+                    <div className="bg-gray-100 py-1 px-2">
+                      {" "}
+                      {/* Make title row darker */}
+                      <h3 className="font-bold text-[12px] text-gray-800">
                         {field}
-                      </td>
-                      <td className="border px-4 py-2 border-gray-300 text-sm">
-                        {details}
-                      </td>
-                    </tr>
-                  );
-                }
-                return null;
-              })}
-            </tbody>
-          </table>
+                      </h3>{" "}
+                      {/* Bold and darker title */}
+                    </div>
+                    <div className="py-2 px-4">
+                      {" "}
+                      {/* Detail row */}
+                      <p className="text-[12px] text-gray-600">{details}</p>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </div>
           <button
             id="download-button" // Add this ID for the button
             onClick={downloadPDF}
