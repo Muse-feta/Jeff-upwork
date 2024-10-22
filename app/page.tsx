@@ -195,31 +195,69 @@ export default function AssessmentForm() {
           className="mt-6 p-4 border rounded-md bg-gray-50"
           ref={assessmentRef}
         >
-          <h2 className="text-lg font-bold mb-4">
-            Medical Assessment Details:
+          <h2 className="text-sm text-center font-bold mb-4">
+            Medical Assessment Details
           </h2>
+
+          {/* Client Information Section */}
+          <div className="mb-6 border-b border-gray-300 pb-4">
+            <div className="bg-gray-100 py-1 px-2">
+              {" "}
+              {/* Same style as other titles */}
+              <h3 className="font-bold text-[12px] text-gray-800">
+                Client Information
+              </h3>
+            </div>
+            <div className="grid grid-cols-2 gap-6 mt-2 md: py-2 px-3">
+              {" "}
+              {/* Two-column layout */}
+              {/* Column 1 */}
+              <div className="flex flex-col">
+                <span className="font-bold text-[12px] text-gray-800">
+                  Client Name
+                </span>
+                <span className="text-[12px] text-gray-600">John Doe</span>{" "}
+                {/* Placeholder */}
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold text-[12px] text-gray-800">
+                  Date of Birth
+                </span>
+                <span className="text-[12px] text-gray-600">01/01/1990</span>{" "}
+                {/* Placeholder */}
+              </div>
+              {/* Column 2 */}
+              <div className="flex flex-col">
+                <span className="font-bold text-[12px] text-gray-800">
+                  Date of Assessment
+                </span>
+                <span className="text-[12px] text-gray-600">10/22/2024</span>{" "}
+                {/* Placeholder */}
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold text-[12px] text-gray-800">
+                  Referral Source
+                </span>
+                <span className="text-[12px] text-gray-600">Dr. Smith</span>{" "}
+                {/* Placeholder */}
+              </div>
+            </div>
+          </div>
+
+          {/* Existing assessment details */}
           <div className="space-y-6">
-            {" "}
-            {/* Add more space between each row */}
             {assessmentLines.map((line, index) => {
               if (line.length > 1) {
                 const field = line[0];
                 const details = line.slice(1).join(": ");
                 return (
                   <div key={index} className="border-b border-gray-300 pb-2">
-                    {" "}
-                    {/* Add padding for space */}
                     <div className="bg-gray-100 py-1 px-2">
-                      {" "}
-                      {/* Make title row darker */}
                       <h3 className="font-bold text-[12px] text-gray-800">
                         {field}
-                      </h3>{" "}
-                      {/* Bold and darker title */}
+                      </h3>
                     </div>
                     <div className="py-2 px-4">
-                      {" "}
-                      {/* Detail row */}
                       <p className="text-[12px] text-gray-600">{details}</p>
                     </div>
                   </div>
@@ -228,8 +266,9 @@ export default function AssessmentForm() {
               return null;
             })}
           </div>
+
           <button
-            id="download-button" // Add this ID for the button
+            id="download-button"
             onClick={downloadPDF}
             className="mt-4 py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200"
           >
